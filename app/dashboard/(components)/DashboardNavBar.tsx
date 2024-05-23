@@ -18,12 +18,12 @@ export default function DashboardTopNav({ children }: { children: ReactNode }) {
         <Dialog>
           <SheetTrigger className="min-[1024px]:hidden p-2 transition">
             <HamburgerMenuIcon />
-            <span className="sr-only">Home</span>
+            <span className="sr-only">Dashboard</span>
           </SheetTrigger>
           <SheetContent side="left">
             <SheetHeader>
               <Link href="/">
-                <SheetTitle>Nextjs Starter Kit</SheetTitle>
+                <SheetTitle>Nextjs Starter Dashboard</SheetTitle>
               </Link>
             </SheetHeader>
             <div className="flex flex-col space-y-3 mt-[1rem]">
@@ -31,7 +31,7 @@ export default function DashboardTopNav({ children }: { children: ReactNode }) {
                 <Link href="/dashboard">
                   <Button variant="outline" className="w-full">
                     <HomeIcon className="mr-2 h-4 w-4" />
-                    Home
+                    Dashboard
                   </Button>
                 </Link>
               </DialogClose>
@@ -39,7 +39,7 @@ export default function DashboardTopNav({ children }: { children: ReactNode }) {
                 <Link href="/dashboard/projects">
                   <Button variant="outline" className="w-full">
                     <Folder className="mr-2 h-4 w-4" />
-                    Projects
+                    Posts
                   </Button>
                 </Link>
               </DialogClose>
@@ -47,7 +47,31 @@ export default function DashboardTopNav({ children }: { children: ReactNode }) {
                 <Link href="/dashboard/finance">
                   <Button variant="outline" className="w-full">
                     <Folder className="mr-2 h-4 w-4" />
-                    Finance
+                    Media
+                  </Button>
+                </Link>
+              </DialogClose>
+              <DialogClose asChild>
+                <Link href="/dashboard/finance">
+                  <Button variant="outline" className="w-full">
+                    <Folder className="mr-2 h-4 w-4" />
+                    Comments
+                  </Button>
+                </Link>
+              </DialogClose>
+              <DialogClose asChild>
+                <Link href="/dashboard/finance">
+                  <Button variant="outline" className="w-full">
+                    <Folder className="mr-2 h-4 w-4" />
+                    Catagories
+                  </Button>
+                </Link>
+              </DialogClose>
+              <DialogClose asChild>
+                <Link href="/dashboard/finance">
+                  <Button variant="outline" className="w-full">
+                    <Folder className="mr-2 h-4 w-4" />
+                    Users
                   </Button>
                 </Link>
               </DialogClose>
