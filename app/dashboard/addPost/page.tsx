@@ -15,6 +15,7 @@ import {
 import { Input } from "@/components/ui/input";
 import React, { useCallback, useState } from "react";
 import Tiptap from "@/components/Texteditor";
+import Uploadthing from '@/components/uploadthing'
 
 const formSchema = z.object({
   title: z.string().min(5, {
@@ -129,6 +130,7 @@ const AddPost = () => {
             </FormItem>
           )}
         />
+       < Uploadthing />
         <Button type="submit">Submit</Button>
       </form>
     </Form>

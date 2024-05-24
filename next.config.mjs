@@ -1,4 +1,17 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
+const nextConfig = {
+    images: {
+      domains: [],
 
-export default nextConfig;
+      remotePatterns: [
+        {
+          protocol: "https",
+          hostname: "'utfs.io/*',",
+          port: "",
+          pathname: "",
+        },],
+    },
+  };
+  
+  export default nextConfig;
+  
