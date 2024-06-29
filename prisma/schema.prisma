@@ -11,6 +11,7 @@ datasource db {
   url       = env("DATABASE_URL")
 }
 
+
 // 
 model User {
   id        String    @id @default(cuid())
@@ -36,19 +37,17 @@ model Post {
   created_at  DateTime @default(now())
   content   String
   image       String?
-  image_alt   String?
-  category_id String
+  category_id String    @default(cuid())
   author_id   String
   title       String
   slug        String?
-  published   Boolean
+  published   Boolean  @default(false)
   author    User     @relation(fields: [author_id], references: [id])
   category category  @relation(fields: [category_id], references: [id])
 }
 
 model category {
   id       String    @id @default(cuid())
-  user_id  String
   category String
   posts    Post[]
 }
