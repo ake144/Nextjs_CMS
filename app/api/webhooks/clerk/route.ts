@@ -3,7 +3,8 @@ import prisma from '@/utils/db';
 import type { WebhookEvent } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
 
-// Clerk Webhook: create or delete a user in the database by Clerk ID
+
+
 export async function POST(req: Request) {
     try {
         // Parse the Clerk Webhook event
