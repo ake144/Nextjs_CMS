@@ -10,6 +10,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
+import Image from "next/image";
+
 
 interface GeneratePostProps {
   setAiGeneratedContent: Dispatch<SetStateAction<string>>;
@@ -107,7 +109,7 @@ export default function GeneratePost({ setAiGeneratedContent }: GeneratePostProp
                         onChange={handleImageUpload}
                       />
                       {imagePreview && (
-                        <img
+                        <image
                           src={imagePreview}
                           alt="Preview"
                           className="ml-4 w-32 h-32 object-cover border rounded"

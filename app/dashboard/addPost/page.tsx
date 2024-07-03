@@ -11,6 +11,8 @@ import Tiptap from "@/components/Texteditor";
 import { CreatePost } from "@/utils/actions/blog/creatPost";
 import GeneratePost from "@/components/generatePost";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import Image from "next/image";
+
 
 const formSchema = z.object({
   title: z.string().min(5, { message: "Title must be at least 5 characters." }),
@@ -137,7 +139,7 @@ const AddPost = () => {
                         <>
                           <input type="file" accept="image/*" onChange={handleImageUpload} />
                           {imagePreview && (
-                            <img
+                            <Image
                               src={imagePreview}
                               alt="Preview"
                               className="mt-2 w-32 h-32 object-cover border rounded"
