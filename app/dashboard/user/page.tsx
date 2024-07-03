@@ -17,16 +17,7 @@ function Users() {
 
 
   return (
-    <div>
-    <h1>Users List</h1>
-    <ul>
-      {users.map(user => (
-        <li key={user.clerkUserId}>
-          {user.firstName} {user.lastName} - {user.email}
-        </li>
-      ))}
-    </ul>
-  </div>
+    <div>Users</div>
   )
 }
 
