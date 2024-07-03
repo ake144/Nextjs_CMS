@@ -1,31 +1,22 @@
-"use client";
+'use client'
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, FormProvider } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { useState, useCallback } from "react";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import Tiptap from "@/components/Texteditor";
+import { CreatePost } from "@/utils/actions/blog/creatPost";
 import GeneratePost from "@/components/generatePost";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const formSchema = z.object({
   title: z.string().min(5, { message: "Title must be at least 5 characters." }),
   slug: z.string().min(5, { message: "Slug must be at least 5 characters." }),
-  featureImage: z.string().optional(),
-  description: z.string()
-    .min(10, { message: "Content must be at least 10 characters." })
-       .trim(),
+  featureImage: z.string(),
+  description: z.string().min(10, { message: "Content must be at least 10 characters." }).trim(),
 });
 
 const AddPost = () => {
@@ -58,8 +49,27 @@ const AddPost = () => {
     }
   }, [formMethods]);
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log(values);
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    try {
+      const { title, slug, featureImage, description } = values;
+
+      const response = await CreatePost({
+        title,
+        slug,
+        featureImage,
+        content: description,
+        authorId: '1' , // Replace with actual author ID
+      });
+
+      if ('error' in response) {
+        console.error("Failed to create post:", response.error);
+      } else {
+        console.log("Post created successfully:", response);
+        // Optionally, handle success feedback or redirection
+      }
+    } catch (error) {
+      console.error("Failed to create post:", error);
+    }
   };
 
   return (
@@ -88,8 +98,7 @@ const AddPost = () => {
                       <FormLabel>Slug</FormLabel>
                       <FormControl>
                         <Input placeholder="Slug for your Blog" {...field} />
-                      </FormControl>
-                      <FormMessage />
+                      </FormControl> 
                     </FormItem>
                   )}
                 />
@@ -102,21 +111,19 @@ const AddPost = () => {
                       <FormControl>
                         <Input placeholder="Main title for your Blog" {...field} />
                       </FormControl>
-                      <FormMessage />
                     </FormItem>
                   )}
                 />
                 <FormField
                   control={formMethods.control}
                   name="description"
-                  
                   render={({ field }) => (
-                    <FormItem  className="bg-black">
+                    <FormItem className="bg-black">
                       <FormLabel>Description</FormLabel>
                       <FormControl>
-                        <Tiptap content={field.value}  onChange={field.onChange} />
+                        <Tiptap content={field.value} onChange={field.onChange} />
                       </FormControl>
-                      {/* <FormMessage /> */}
+                      {/*'' */}
                     </FormItem>
                   )}
                 />
@@ -138,7 +145,7 @@ const AddPost = () => {
                           )}
                         </>
                       </FormControl>
-                      <FormMessage />
+                 
                     </FormItem>
                   )}
                 />
@@ -147,7 +154,7 @@ const AddPost = () => {
                 </Button>
               </form>
             </Form>
-            </FormProvider>
+          </FormProvider>
         )}
         {aiGeneratedContent && (
           <div className="mt-6 bg-gray-50 p-4 my-5 rounded-md">

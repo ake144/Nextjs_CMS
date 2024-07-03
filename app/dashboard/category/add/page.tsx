@@ -1,62 +1,62 @@
 'use client'
 
-import React from 'react'
-import { Button } from '@/components/ui/button'
-import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-  } from "@/components/ui/form";
-  import { Input } from "@/components/ui/input";
-  import { useForm, SubmitHandler } from "react-hook-form"
+import React from 'react';
+import { useForm, SubmitHandler } from 'react-hook-form';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { createCategory, CategorySchema } from '@/utils/actions/category/createCategory';
+import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
 
-  type Inputs = {
-    categories:string;
-  }
 
-const AddCategories=()=> {
-    const { register, handleSubmit, formState: { errors } } = useForm<Inputs>();
 
-   const form  = useForm<Inputs>({
-      defaultValues: {
-        categories: "",
-      },
-    });
 
-    const onSubmit: SubmitHandler<Inputs> = (data) => console.log(data)
+const AddCategories: React.FC = () => {
+ const formMethods = useForm<CategorySchema>({
+    mode: 'onChange',
+  });
+
+  const { handleSubmit, reset, formState: { errors } } = formMethods;
+
+  const onSubmit = async (data: CategorySchema) => {
+    try {
+      const result = await createCategory(data);
+      console.log("Category created:", result);
+      reset(); // Reset form after successful submission
+      // Optionally, you can show a success message or redirect to another page
+    } catch (error) {
+      console.error("Error creating category:", error);
+      // Handle error or display error messages to the user
+    }
   
-    return (
+ }
 
+  return (
     <>
       <div className='p-25 m-4 items-center justify-center flex'>Add New Categories</div>
-      <Form {...form}>
-    <form className='flex  flex-col justify-center items-center'  onSubmit={handleSubmit(onSubmit)}>        
-      <FormField
-          control={form.control}
-          name="categories"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>categories</FormLabel>
-              <FormControl>
-                <>
-                <Input className="text-md mx-4" placeholder="add categories for your post" {...field} />
-                {errors.categories && <span>This field is required</span>}
-                </>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-             <Button type="submit" className='p-4 m-5'>Submit</Button>
+      <Form {...formMethods}>
+      <form onSubmit={formMethods.handleSubmit(onSubmit)} className="space-y-4">
+          <FormField
+                  control={formMethods.control}
+                  name="category"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>category</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Slug for your Blog" {...field} />
+                      </FormControl> 
+                    </FormItem>
+                  )}
+                />
 
-        </form>
-    </Form>
-  
+
+          <Button type="submit" className="bg-blue-600 text-white">
+
+            Submit
+          </Button>
+          </form>
+      </Form>
     </>
-  )
+  );
 }
 
-export default AddCategories
+export default AddCategories;

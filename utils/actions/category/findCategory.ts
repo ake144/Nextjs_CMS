@@ -1,7 +1,13 @@
+'use server'
 
-
-import prisma from "@/utils/db"
+import prisma from "@/utils/db";
 
 export async function getCategories() {
-    return prisma.category.findMany()
+  try {
+    const categories = await prisma.category.findMany();
+    return categories;
+  } catch (error) {
+    console.error('Error fetching categories:', error);
+    throw new Error('Error fetching categories');
+  }
 }

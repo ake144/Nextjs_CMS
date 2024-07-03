@@ -93,7 +93,7 @@ export default function GeneratePost({ setAiGeneratedContent }: GeneratePostProp
                 {loading ? "Generating..." : "Generate Content"}
               </button>
             </form>
-            <FormField
+            {/* <FormField
               control={formMethods.control}
               name="featureImage"
               render={({ field }) => (
@@ -116,9 +116,9 @@ export default function GeneratePost({ setAiGeneratedContent }: GeneratePostProp
                     </>
                   </FormControl>
                   <FormMessage />
-                </FormItem>
-              )}
-            />
+                </FormItem> */}
+              {/* )} */}
+            {/* /> */}
           </FormProvider>
         </div>
       </main>

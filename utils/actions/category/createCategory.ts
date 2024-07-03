@@ -1,29 +1,36 @@
 'use server'
 
-import prisma from "@/utils/db"
-import { NextRequest, NextResponse } from "next/server"
+import prisma from "@/utils/db";
+import { NextResponse } from "next/server";
 
-interface category {
-    category:string
+import { Prisma } from "@prisma/client";
+
+export interface CategorySchema { 
+  category: string;
 }
 
-export async function POST(req: NextRequest) {
-    const body = await req.json();
-    const { category } = body;
-        if(!category) {
-            return NextResponse.json({error: "Category is required"}, {status: 400})
-        }
-        try{
-            const newCategory = await prisma.category.create({
-                data: {
-                    category,
-                },
-            });
-            return NextResponse.json(newCategory, {status: 201})
 
-        }
-        catch(e){
-            return NextResponse.json({error: "Category already exists"}, {status: 400})
-        }
 
+export async function createCategory(data: CategorySchema) {
+  try {
+    const { category }: CategorySchema = data;
+
+    const newCategory = await prisma.category.create({
+      data: {
+        category,
+      },
+    });
+
+    return newCategory;
+
+  } catch (error) {
+    console.error("Error creating category:", error);
+
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      console.error("Prisma error:", error.message);
+      throw new Error(`Prisma error: ${error.message}`);
+    } else {
+      throw new Error("Error creating category");
+    }
+  }
 }

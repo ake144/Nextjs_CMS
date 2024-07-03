@@ -1,3 +1,7 @@
+'use server'
+
+// utils/actions/blog/createPost.ts
+
 import prisma from "@/utils/db";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -9,15 +13,17 @@ interface Post {
   authorId: string;
 }
 
-export async function POST(req: NextRequest) {
-  const body = await req.json();
-  const { slug, title, content, featureImage, authorId }: Post = body;
-
-  if (!title || !content || !featureImage || !authorId) {
-    return NextResponse.json({ error: "Title, content, feature image, and author ID are required" }, { status: 400 });
-  }
-
+export async function CreatePost(data: Post) {
   try {
+    const { title, slug, content, featureImage, authorId }: Post = data;
+
+    if (!title || !content || !featureImage || !authorId) {
+      return NextResponse.json(
+        { error: "Title, content, feature image, and author ID are required" },
+        { status: 400 }
+      );
+    }
+
     const newPost = await prisma.post.create({
       data: {
         slug,
@@ -27,8 +33,10 @@ export async function POST(req: NextRequest) {
         author_id: authorId,
       },
     });
-    return NextResponse.json(newPost, { status: 201 });
-  } catch (e) {
-    return NextResponse.json({ error: "Post creation failed" }, { status: 400 });
+
+    return newPost; // Return plain object here, not NextResponse.json()
+  } catch (error) {
+    console.error("Error creating post:", error);
+    return { error: "Post creation failed" }; // Return plain object here, not NextResponse.json()
   }
 }

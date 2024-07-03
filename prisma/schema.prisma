@@ -7,20 +7,22 @@ generator client {
 
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
+  provider = "mysql"
+  url      = env("DATABASE_URL")
 }
+
 
 
 // 
 model User {
   id        String    @id @default(cuid())
-  email     String    @unique
+  email     String?    @unique
   first_name        String?
   last_name         String?
   profile_image_url String?
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
+  clerkUserId     String?      @unique
   role     Role       @default(AUTHOR)
   posts     Post[]
 }

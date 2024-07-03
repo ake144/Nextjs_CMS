@@ -9,11 +9,15 @@ if (!apiKey) {
   throw new Error('GEMINI_API_KEY environment variable is not set');
 }
 
+const systemInstruction = `
+  You are an expert in content creation. Create a well-structured, professional, and engaging blog post for the given title. Ensure the content includes an introduction, main sections with subheadings, and a conclusion. The tone should be informative and accessible, suitable for a broad audience.
+`;
+
 const genAI = new GoogleGenerativeAI(apiKey);
 
 const model = genAI.getGenerativeModel({
   model: "gemini-1.5-flash",
-  systemInstruction: "You are an expert in content creation. Create SEO and high-quality plain text content using the given slug or title.",
+  systemInstruction 
 });
 
 const generationConfig = {
