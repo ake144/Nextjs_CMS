@@ -18,7 +18,7 @@ model User {
   first_name        String?
   last_name         String?
   profile_image_url String?
-  apiKey            String?
+  apiKey            String?    @unique
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
   clerkUserId       String?      @unique
@@ -38,8 +38,7 @@ model Post {
   created_at  DateTime   @default(now())
   content     String
   image       String?
-  category_id String     @default(cuid())
-  author_id   String     @db.ObjectId
+  author_id   String       @db.ObjectId
   title       String
   slug        String?
   published   Boolean  @default(false)

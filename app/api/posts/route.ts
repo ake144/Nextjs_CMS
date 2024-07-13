@@ -1,21 +1,21 @@
-import { NextRequest, NextResponse } from 'next/server';
-import prisma from '@/utils/db';
-import { authenticateApiToken } from '@/middleware/authenticateApiToken';
+// pages/api/posts.ts
 
-export async function GET(req: NextRequest) {
+import { NextApiRequest, NextApiResponse } from 'next';
+import { getPostsByApiKey } from '@/utils/actions/blog/getPosts';
+import { NextResponse } from 'next/server';
+
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  const apiKey = req.headers['x-api-key'] as string;
+
+  if (!apiKey) {
+    return res.status(400).json({ error: 'API key is required' });
+  }
+
   try {
-    const user = await authenticateApiToken(req);
-
-    if (!user) {
-      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
-    }
-
-    const posts = await prisma.post.findMany({
-      where: { userId: user.id },
-    });
-
-    return NextResponse.json(posts, { status: 200 });
-  } catch (error) {
-    return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
+    const posts = await getPostsByApiKey(apiKey);
+    return NextResponse.json({data:posts}, {status:200});
+  } catch (error: any) {
+    console.error('Error fetching posts:', error);
+    return NextResponse.json({ error: error.message }, {status:500});
   }
 }

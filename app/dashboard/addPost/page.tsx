@@ -1,23 +1,25 @@
-'use client'
+"use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, FormProvider } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import Tiptap from "@/components/Texteditor";
-import { CreatePost } from "@/utils/actions/blog/creatPost";
+
 import GeneratePost from "@/components/generatePost";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import Image from "next/image";
-
+import { useUser } from "@clerk/nextjs";
+import { getByClerkId } from "@/utils/actions/user/user"; // Correct import path
+import { CreatePost } from "@/utils/actions/blog/creatPost";
 
 const formSchema = z.object({
   title: z.string().min(5, { message: "Title must be at least 5 characters." }),
   slug: z.string().min(5, { message: "Slug must be at least 5 characters." }),
-  featureImage: z.string(),
+  image: z.string(),
   description: z.string().min(10, { message: "Content must be at least 10 characters." }).trim(),
 });
 
@@ -25,6 +27,22 @@ const AddPost = () => {
   const [useAI, setUseAI] = useState(false);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [aiGeneratedContent, setAiGeneratedContent] = useState("");
+  const { user } = useUser();
+  const [userId, setUserId] = useState<string | null>(null);
+
+
+
+  useEffect(() => {
+    if (user) {
+      const fetchUserId = async () => {
+        const fetchedUser = await getByClerkId(user.id);
+        setUserId(fetchedUser?.id ?? null);
+      };
+      fetchUserId();
+    }
+  }, [user]);
+
+console.log("the userId", userId,  " and ", user)
 
   const formMethods = useForm({
     resolver: zodResolver(formSchema),
@@ -32,7 +50,7 @@ const AddPost = () => {
     defaultValues: {
       title: "",
       slug: "",
-      featureImage: "",
+      image: "",
       description: "",
     },
   });
@@ -44,7 +62,7 @@ const AddPost = () => {
       reader.onloadend = () => {
         if (reader.result) {
           setImagePreview(reader.result as string);
-          formMethods.setValue("featureImage", reader.result as string);
+          formMethods.setValue("image", reader.result as string);
         }
       };
       reader.readAsDataURL(file);
@@ -52,15 +70,18 @@ const AddPost = () => {
   }, [formMethods]);
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    if (!userId) {
+      console.error("User ID not found");
+      return;
+    }
     try {
-      const { title, slug, featureImage, description } = values;
-
+      const { title, slug, image, description } = values;
       const response = await CreatePost({
         title,
         slug,
-        featureImage,
+        image,
         content: description,
-        authorId: '1' , // Replace with actual author ID
+        authorId: userId,
       });
 
       if ('error' in response) {
@@ -100,7 +121,7 @@ const AddPost = () => {
                       <FormLabel>Slug</FormLabel>
                       <FormControl>
                         <Input placeholder="Slug for your Blog" {...field} />
-                      </FormControl> 
+                      </FormControl>
                     </FormItem>
                   )}
                 />
@@ -120,18 +141,17 @@ const AddPost = () => {
                   control={formMethods.control}
                   name="description"
                   render={({ field }) => (
-                    <FormItem className="bg-black">
+                    <FormItem>
                       <FormLabel>Description</FormLabel>
                       <FormControl>
                         <Tiptap content={field.value} onChange={field.onChange} />
                       </FormControl>
-                      {/*'' */}
                     </FormItem>
                   )}
                 />
                 <FormField
                   control={formMethods.control}
-                  name="featureImage"
+                  name="image"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Feature Image</FormLabel>
@@ -142,12 +162,13 @@ const AddPost = () => {
                             <Image
                               src={imagePreview}
                               alt="Preview"
+                              width={40}
+                              height={36}
                               className="mt-2 w-32 h-32 object-cover border rounded"
                             />
                           )}
                         </>
                       </FormControl>
-                 
                     </FormItem>
                   )}
                 />

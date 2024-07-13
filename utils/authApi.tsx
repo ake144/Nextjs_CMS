@@ -9,7 +9,7 @@ export async function authenticateApiToken(req: NextRequest) {
   }
 
   const user = await prisma.user.findUnique({
-    where: { apiToken: token },
+    where: { apiKey: token },
   });
 
   return user;

@@ -19,8 +19,8 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
     }
 
-    const post = await prisma.post.findUnique({
-      where: { id: parseInt(id), userId: user.id },
+    const post = await prisma.post.findMany({
+      where: {  author_id: user.id },
     });
 
     if (!post) {
