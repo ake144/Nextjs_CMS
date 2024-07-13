@@ -4,7 +4,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { getPostsByApiKey } from '@/utils/actions/blog/getPosts';
 import { NextResponse } from 'next/server';
 
-export default async function GET(req: NextApiRequest, res: NextApiResponse) {
+export  async function GET(req: NextApiRequest, res: NextApiResponse) {
   const apiKey = req.headers['x-api-key'] as string;
 
   if (!apiKey) {
