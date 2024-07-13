@@ -5,7 +5,8 @@ import { Label } from '@/components/ui/label'
 import { useUser } from '@clerk/nextjs'
 
 export default function Settings() {
-  const user = useUser()
+  const user  = useUser();
+
 
   return (
     <div className='flex justify-start items-center flex-wrap px-4 pt-5 gap-4'>
@@ -29,6 +30,23 @@ export default function Settings() {
             <Input disabled defaultValue={user?.user?.emailAddresses?.[0]?.emailAddress!} />
           </div>
         </div>
+        <div>
+        <p><strong>API Key:</strong> {user?.apiKey}</p>
+        <p>Use this API key to fetch your posts from other sites.</p>
+        </div>
+        <>
+                 {/* <script>
+              async function fetchPosts(apiKey) {
+                const response = await fetch('https://yourdomain.com/api/posts', {
+                  headers: {
+                    'x-api-key': apiKey
+                  }
+                });
+                const posts = await response.json();
+                console.log(posts);
+              } */}
+
+         </>
       </div>
     </div>
   )

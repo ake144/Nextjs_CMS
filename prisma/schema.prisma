@@ -7,22 +7,23 @@ generator client {
 
 
 datasource db {
-  provider = "mysql"
+   provider = "mongodb"
   url      = env("DATABASE_URL")
 }
 
 
 model User {
-  id        String    @id @default(cuid())
-  email     String?    @unique
+  id                String    @id @default(auto()) @map("_id") @db.ObjectId
+  email             String?    @unique
   first_name        String?
   last_name         String?
   profile_image_url String?
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  clerkUserId     String?      @unique
-  role     Role       @default(AUTHOR)
-  posts     Post[]
+  apiKey            String?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  clerkUserId       String?      @unique
+  role              Role       @default(AUTHOR)
+  posts             Post[]
 }
 
 enum Role {
@@ -33,22 +34,22 @@ enum Role {
 
 
 model Post {
-  id          Int      @id @default(autoincrement())
-  created_at  DateTime @default(now())
-  content   String
+  id          String      @id @default(auto()) @map("_id")  @db.ObjectId
+  created_at  DateTime   @default(now())
+  content     String
   image       String?
-  category_id String    @default(cuid())
-  author_id   String
+  category_id String     @default(cuid())
+  author_id   String     @db.ObjectId
   title       String
   slug        String?
   published   Boolean  @default(false)
-  author    User     @relation(fields: [author_id], references: [id])
-  category category  @relation(fields: [category_id], references: [id])
+  author      User     @relation(fields: [author_id], references: [id])
+  // category category  @relation(fields: [category_id], references: [id])
 }
 
-model category {
-  id       String    @id @default(cuid())
-  category String
-  posts    Post[]
-}
+// model category {
+//   id       String    @id @default(cuid())
+//   category String
+//   posts    Post[]
+// }
 
