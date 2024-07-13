@@ -30,10 +30,10 @@ export default function Settings() {
             <Input disabled defaultValue={user?.user?.emailAddresses?.[0]?.emailAddress!} />
           </div>
         </div>
-        <div>
+        {/* <div>
         <p><strong>API Key:</strong> {user?.apiKey}</p>
         <p>Use this API key to fetch your posts from other sites.</p>
-        </div>
+        </div> */}
         <>
                  {/* <script>
               async function fetchPosts(apiKey) {
