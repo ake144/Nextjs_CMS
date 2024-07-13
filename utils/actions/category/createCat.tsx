@@ -1,12 +1,9 @@
-'use sever'
+'use server'
 
 import prisma from "@/utils/db";
 
-interface CreateCategoryArgs {
-  category: string;
-}
-
-export async function createCategory({ category }: CreateCategoryArgs) {
+export async function createCategory({ category }: { category: string }) {
+  console.log('the category', category);
   try {
     const newCat = await prisma.category.create({
       data: { category }

@@ -41,14 +41,15 @@ model Post {
   author_id   String       @db.ObjectId
   title       String
   slug        String?
+  category_id String?       @db.ObjectId
   published   Boolean  @default(false)
   author      User     @relation(fields: [author_id], references: [id])
-  // category category  @relation(fields: [category_id], references: [id])
+  category    category?  @relation(fields: [category_id], references: [id])
 }
 
-// model category {
-//   id       String    @id @default(cuid())
-//   category String
-//   posts    Post[]
-// }
+model category {
+  id        String         @id @default(auto()) @map("_id") @db.ObjectId
+  category String
+  posts    Post[]
+}
 

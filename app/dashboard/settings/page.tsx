@@ -18,7 +18,7 @@ export default function Settings() {
 
        
         setUserData(fetchedUser);
-
+ 
        }
 
       }
@@ -54,23 +54,6 @@ export default function Settings() {
             <Input disabled defaultValue={userData.email} />
           </div>
         </div>
-        <div  className='mt-[70px]'>
-        <p><strong>API Key:</strong> <span typeof='password'  className='mx-6'> {userData.apiKey}</span></p>
-        <p>Use this API key to fetch your posts from other sites.</p>
-        </div>
-        <>
-                 {/* <script>
-              async function fetchPosts(apiKey) {
-                const response = await fetch('https://yourdomain.com/api/posts', {
-                  headers: {
-                    'x-api-key': apiKey
-                  }
-                });
-                const posts = await response.json();
-                console.log(posts);
-              } */}
-
-         </>
       </div>
     </div>
   )

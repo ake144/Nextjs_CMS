@@ -21,7 +21,7 @@ function Users() {
       <h1>Users</h1>
       <ul>
         {users.map((user) => (
-          <li key={user.id}>{user.email}</li>
+          <li  className='mx-4 mt-2 justify-start items-start ' key={user.id}>{user.email} {''}  <span className='mx-4  justify-end items-end flex'>Publisher</span></li>
         ))}
       </ul>
     </div>

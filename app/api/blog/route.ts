@@ -1,6 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { stat } from 'fs';
 import { NextRequest, NextResponse } from 'next/server';
 
 const apiKey = process.env.GEMINI_API_KEY;
@@ -28,29 +27,37 @@ const generationConfig = {
   responseMimeType: "text/plain",
 };
 
-export  async function POST(req: Request) {
+const stripHtml = (html: string) => {
+  return html.replace(/<\/?[^>]+(>|$)/g, "");
+};
+
+export async function POST(req: Request) {
   try {
     const { prompt } = await req.json();
-  console.log('Prompt:', prompt);
+    console.log('Prompt:', prompt);
+
     if (!prompt) {
-    return  NextResponse.json({ message: 'Prompt is required' , status: 400})
+      return NextResponse.json({ message: 'Prompt is required', status: 400 });
     }
+
+    // Strip HTML tags from the prompt
+    const cleanedPrompt = stripHtml(prompt);
 
     const chatSession = model.startChat({
       generationConfig,
       history: [
         {
           role: "user",
-          parts: [{ text: prompt }],
+          parts: [{ text: cleanedPrompt }],
         },
       ],
     });
 
-    const result = await chatSession.sendMessage(prompt);
+    const result = await chatSession.sendMessage(cleanedPrompt);
 
-    return NextResponse.json(({ message: result.response.text()}));
+    return NextResponse.json(({ message: result.response.text() }));
   } catch (error: any) {
     console.error('Error generating content:', error);
-    return NextResponse.json({ message: error.message});
+    return NextResponse.json({ message: error.message });
   }
 }

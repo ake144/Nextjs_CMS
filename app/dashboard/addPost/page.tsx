@@ -15,6 +15,8 @@ import Image from "next/image";
 import { useUser } from "@clerk/nextjs";
 import { getByClerkId } from "@/utils/actions/user/user"; // Correct import path
 import { CreatePost } from "@/utils/actions/blog/creatPost";
+import ImageGen from "@/components/imageGen";
+
 
 const formSchema = z.object({
   title: z.string().min(5, { message: "Title must be at least 5 characters." }),
@@ -25,6 +27,7 @@ const formSchema = z.object({
 
 const AddPost = () => {
   const [useAI, setUseAI] = useState(false);
+  const [useImg, setUseImg] = useState(false)
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [aiGeneratedContent, setAiGeneratedContent] = useState("");
   const { user } = useUser();
@@ -95,19 +98,43 @@ const AddPost = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center p-4 bg-gray-100 min-h-screen">
-      <div className="w-full max-w-2xl bg-black p-6 shadow-lg rounded-lg">
+    <div className="flex flex-col items-center justify-center  bg-gray-100 min-h-screen">
+      <div className="w-full  bg-black p-6 shadow-lg rounded-lg">
         <h1 className="text-3xl font-bold text-blue-500 text-center mb-5">Create a New Post</h1>
         <div className="flex justify-center mb-5">
-          <Button onClick={() => setUseAI(false)} className={!useAI ? "bg-blue-600 text-white" : ""}>
+        <Button
+            onClick={() => {
+              setUseAI(false);
+              setUseImg(false);
+            }}
+            className={!useAI && !useImg ? "bg-blue-600 mx-1 text-white" : "mx-1"}
+          >
             Create Manually
           </Button>
-          <Button onClick={() => setUseAI(true)} className={useAI ? "bg-blue-600 text-white" : ""}>
+          <Button
+            onClick={() => {
+              setUseAI(true);
+              setUseImg(false);
+            }}
+            className={useAI && !useImg ? "bg-blue-600 mx-1 text-white" : "mx-1"}
+          >
             Generate with AI
           </Button>
+          <Button
+            onClick={() => {
+              setUseImg(true);
+              setUseAI(false);
+            }}
+            className={useImg && !useAI ? "bg-blue-600 mx-1 text-white" : "mx-1"}
+          >
+            AI Image
+          </Button>
         </div>
+
         {useAI ? (
           <GeneratePost setAiGeneratedContent={setAiGeneratedContent} />
+        ) : useImg ? (
+          <ImageGen />
         ) : (
           <FormProvider {...formMethods}>
             <Form {...formMethods}>
@@ -177,6 +204,16 @@ const AddPost = () => {
               </form>
             </Form>
           </FormProvider>
+        )}
+        {aiGeneratedContent && (
+          <div className="mt-6 bg-gray-50 p-4 my-5 rounded-md">
+            <h2 className="text-xl font-semibold mb-2 text-black">Generated Content</h2>
+            <ScrollArea className="h-[400px] mb-2 rounded-md border p-4">
+              <div className="text-gray-700 whitespace-pre-wrap">
+                {aiGeneratedContent}
+              </div>
+            </ScrollArea>
+          </div>
         )}
       </div>
     </div>
