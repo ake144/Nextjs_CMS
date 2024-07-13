@@ -42,7 +42,6 @@ const AddPost = () => {
     }
   }, [user]);
 
-console.log("the userId", userId,  " and ", user)
 
   const formMethods = useForm({
     resolver: zodResolver(formSchema),
@@ -97,7 +96,7 @@ console.log("the userId", userId,  " and ", user)
 
   return (
     <div className="flex flex-col items-center justify-center p-4 bg-gray-100 min-h-screen">
-      <div className="w-full max-w-2xl bg-white p-6 shadow-lg rounded-lg">
+      <div className="w-full max-w-2xl bg-black p-6 shadow-lg rounded-lg">
         <h1 className="text-3xl font-bold text-blue-500 text-center mb-5">Create a New Post</h1>
         <div className="flex justify-center mb-5">
           <Button onClick={() => setUseAI(false)} className={!useAI ? "bg-blue-600 text-white" : ""}>
@@ -178,16 +177,6 @@ console.log("the userId", userId,  " and ", user)
               </form>
             </Form>
           </FormProvider>
-        )}
-        {aiGeneratedContent && (
-          <div className="mt-6 bg-gray-50 p-4 my-5 rounded-md">
-            <h2 className="text-xl font-semibold mb-2 text-black">Generated Content</h2>
-            <ScrollArea className="h-[400px] mb-2 rounded-md border p-4">
-              <div className="text-gray-700 whitespace-pre-wrap">
-                {aiGeneratedContent}
-              </div>
-            </ScrollArea>
-          </div>
         )}
       </div>
     </div>

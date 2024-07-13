@@ -2,11 +2,35 @@
 
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { getByClerkId } from '@/utils/actions/user/user';
 import { useUser } from '@clerk/nextjs'
+import { useEffect, useState } from 'react';
 
 export default function Settings() {
-  const user  = useUser();
+  const {user}  = useUser();
+  const [userData, setUserData] = useState<any >(null);
 
+  useEffect(() => {
+    const fetchPosts = async () => {
+      if (user) {
+        const fetchedUser = await getByClerkId(user.id);
+       if(fetchedUser){
+
+       
+        setUserData(fetchedUser);
+
+       }
+
+      }
+    };
+
+    fetchPosts();
+  }, [user]);
+
+
+  if (!userData) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className='flex justify-start items-center flex-wrap px-4 pt-5 gap-4'>
@@ -17,23 +41,23 @@ export default function Settings() {
         <div className='flex w-full gap-3 mt-3'>
           <div className='flex flex-col gap-3 w-full'>
             <Label>First Name</Label>
-            <Input disabled defaultValue={user?.user?.firstName ? user?.user?.firstName : ""} />
+            <Input disabled defaultValue={userData.first_name} />
           </div>
           <div className='flex flex-col gap-3 w-full'>
             <Label>Last Name</Label>
-            <Input disabled defaultValue={user?.user?.lastName ? user?.user?.lastName : ""} />
+            <Input disabled defaultValue={userData.last_name} />
           </div>
         </div>
         <div className='flex flex-col gap-3'>
           <div className='flex flex-col gap-3'>
             <Label>E-mail</Label>
-            <Input disabled defaultValue={user?.user?.emailAddresses?.[0]?.emailAddress!} />
+            <Input disabled defaultValue={userData.email} />
           </div>
         </div>
-        {/* <div>
-        <p><strong>API Key:</strong> {user?.apiKey}</p>
+        <div  className='mt-[70px]'>
+        <p><strong>API Key:</strong> <span typeof='password'  className='mx-6'> {userData.apiKey}</span></p>
         <p>Use this API key to fetch your posts from other sites.</p>
-        </div> */}
+        </div>
         <>
                  {/* <script>
               async function fetchPosts(apiKey) {
