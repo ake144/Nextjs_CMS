@@ -4,8 +4,8 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { getPostsByApiKey } from '@/utils/actions/blog/getPosts';
 import { NextResponse } from 'next/server';
 
-export  async function GET(req: NextApiRequest, res: NextApiResponse) {
-  const apiKey = req.headers['x-api-key'] as string;
+export  async function GET(req: Request) {
+  const apiKey = req.headers.get('x-api-key') as string;
 
   if (!apiKey) {
     return NextResponse.json({ error: 'API key is required' },{status:400});
