@@ -99,7 +99,7 @@ const AddPost = () => {
 
   return (
     <div className="flex flex-col items-center justify-center  bg-gray-100 min-h-screen">
-      <div className="w-full  bg-black p-6 shadow-lg rounded-lg">
+      <div className="w-full dark:bg-white  bg-black p-6 shadow-lg rounded-lg">
         <h1 className="text-3xl font-bold text-blue-500 text-center mb-5">Create a New Post</h1>
         <div className="flex justify-center mb-5">
         <Button
@@ -144,7 +144,7 @@ const AddPost = () => {
                   name="slug"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Slug</FormLabel>
+                      <FormLabel  className="dark:text-black text-white ">Slug</FormLabel>
                       <FormControl>
                         <Input placeholder="Slug for your Blog" {...field} />
                       </FormControl>
@@ -156,7 +156,7 @@ const AddPost = () => {
                   name="title"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Title</FormLabel>
+                      <FormLabel className="dark:text-black text-white ">Title</FormLabel>
                       <FormControl>
                         <Input placeholder="Main title for your Blog" {...field} />
                       </FormControl>
@@ -166,11 +166,12 @@ const AddPost = () => {
                 <FormField
                   control={formMethods.control}
                   name="description"
+                  
                   render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Description</FormLabel>
-                      <FormControl>
-                        <Tiptap content={field.value} onChange={field.onChange} />
+                    <FormItem  className="dark:text-black text-white dark:bg-white  bg-black dark:border-b-gray-50">
+                      <FormLabel  className="dark:text-black text-white ">Description</FormLabel>
+                      <FormControl >
+                        <Tiptap content={field.value} onChange={field.onChange}  />
                       </FormControl>
                     </FormItem>
                   )}
@@ -180,7 +181,7 @@ const AddPost = () => {
                   name="image"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Feature Image</FormLabel>
+                      <FormLabel  className="dark:text-black text-white ">Feature Image</FormLabel>
                       <FormControl>
                         <>
                           <input type="file" accept="image/*" onChange={handleImageUpload} />

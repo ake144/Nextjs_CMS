@@ -11,8 +11,10 @@
   },
   "dependencies": {
     "@clerk/nextjs": "^5.0.12",
+    "@cloudinary/url-gen": "^1.19.0",
     "@google/generative-ai": "^0.14.0",
     "@hookform/resolvers": "^3.4.2",
+    "@huggingface/inference": "^2.7.0",
     "@prisma/client": "^5.16.2",
     "@radix-ui/react-avatar": "^1.0.4",
     "@radix-ui/react-dialog": "^1.0.5",
