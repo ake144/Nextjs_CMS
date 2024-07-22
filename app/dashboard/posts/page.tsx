@@ -7,6 +7,7 @@ import React, { useEffect, useState } from 'react';
 import { GetPostById } from '@/utils/actions/blog/getbyId';
 import { useUser } from '@clerk/nextjs';
 import { getByClerkId } from '@/utils/actions/user/user';
+import Image from 'next/image';
 
 interface Post {
   id: string;
@@ -65,7 +66,7 @@ const PostsPage: React.FC = () => {
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 mx-4 mt-7 lg:grid-cols-3">
         {posts.map((post) => (
           <article key={post.id} className="overflow-hidden rounded-lg shadow transition hover:shadow-lg">
-            <img
+            <Image
               alt=""
               src={post.image ?? 'https://via.placeholder.com/400'}
               className="h-56 w-full object-cover"
