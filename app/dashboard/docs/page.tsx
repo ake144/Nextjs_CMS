@@ -1,37 +1,29 @@
-'use client'
-
+'use client';
 
 import { getByClerkId } from '@/utils/actions/user/user';
 import { useUser } from '@clerk/nextjs';
-import React,{useState, useEffect} from 'react';
-
+import React, { useState, useEffect } from 'react';
 
 const ApiDocs = () => {
+  const { user } = useUser();
+  const [userData, setUserData] = useState<any>(null);
 
-    const {user}  = useUser();
-    const [userData, setUserData] = useState<any >(null);
-  
-    useEffect(() => {
-      const fetchPosts = async () => {
-        if (user) {
-          const fetchedUser = await getByClerkId(user.id);
-         if(fetchedUser){
-  
-         
+  useEffect(() => {
+    const fetchPosts = async () => {
+      if (user) {
+        const fetchedUser = await getByClerkId(user.id);
+        if (fetchedUser) {
           setUserData(fetchedUser);
-  
-         }
-  
         }
-      };
-  
-      fetchPosts();
-    }, [user]);
-  
-  
-    if (!userData) {
-      return <div>Loading...</div>;
-    }
+      }
+    };
+
+    fetchPosts();
+  }, [user]);
+
+  if (!userData) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="container mx-auto mt-[70px] p-6">
@@ -94,6 +86,36 @@ Headers:
       "image": "https://example.com/image2.jpg"
     }
   ]
+}`}
+            </pre>
+          </div>
+        </div>
+        <div className="mb-4">
+          <h3 className="text-xl font-semibold">GET /api/posts/[id]</h3>
+          <p>
+            Fetch a single post by its ID. The request must include your API key in the headers.
+          </p>
+          <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg">
+            <pre>
+{`GET https://nextjs-cms1.vercel.app/api/posts/{postId}
+Headers:
+  x-api-key: ${userData.apiKey}`}
+            </pre>
+          </div>
+        </div>
+        <div className="mb-4">
+          <h3 className="text-xl font-semibold">Response</h3>
+          <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg">
+            <pre>
+{`{
+  "post": {
+    "id": "1",
+    "title": "Post Title",
+    "author": "Author Name",
+    "created_at": "2024-07-13T12:34:56.789Z",
+    "content": "Post content here...",
+    "image": "https://example.com/image.jpg"
+  }
 }`}
             </pre>
           </div>
