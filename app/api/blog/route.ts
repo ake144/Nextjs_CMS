@@ -58,6 +58,6 @@ export async function POST(req: Request)
     return    NextResponse.json({ message: result.response.text() }, {status: 200});
   } catch (error: any) {
     console.error('Error generating content:', error);
-    return NextResponse.json({ message: 'Internal Server Error' }), {status: 500};
+    return NextResponse.json({ message: 'Internal Server Error' }, {status: 500});
   }
 }
