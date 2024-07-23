@@ -8,6 +8,10 @@ import { GetPostById } from '@/utils/actions/blog/getbyId';
 import { useUser } from '@clerk/nextjs';
 import { getByClerkId } from '@/utils/actions/user/user';
 import Image from 'next/image';
+import ContentTemplateSelection from '@/components/selectTemplate';
+import { ContentTemplate } from '@/utils/types/type';
+import TemplateSelector from '@/components/selectTemplate';
+import Templates from '@/components/postArea';
 
 interface Post {
   id: string;
@@ -22,6 +26,11 @@ interface Post {
 const PostsPage: React.FC = () => {
   const { user } = useUser();
   const [posts, setPosts] = useState<Post[]>([]);
+
+  const handleTemplateSelect = (template: ContentTemplate) => {
+    // Handle template selection
+  };
+
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -41,10 +50,16 @@ const PostsPage: React.FC = () => {
   return (
     <>
       <Link href='/'>
-        <div className='mx-2 p-7'>
+        <div className='mx-2 p-7 w-[80px]'>
           Back
         </div>
       </Link>
+
+      <div>
+      <Templates   />
+
+
+      </div>
       <div className='p-4 m-4 justify-center items-center gap-1'>
         <h1 className='text-3xl items-center mt-4 pt-3 underline-offset-1 p-5 justify-center'>Posts</h1>
 
@@ -68,6 +83,8 @@ const PostsPage: React.FC = () => {
           <article key={post.id} className="overflow-hidden rounded-lg shadow transition hover:shadow-lg">
             <Image
               alt=""
+              height={56}
+              width={80}
               src={post.image ?? 'https://via.placeholder.com/400'}
               className="h-56 w-full object-cover"
             />

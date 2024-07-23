@@ -1,17 +1,9 @@
+'use client';
+
 import { Dispatch, SetStateAction, useState, useCallback } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
-import Image from "next/image";
-
 
 interface GeneratePostProps {
   setAiGeneratedContent: Dispatch<SetStateAction<string>>;
@@ -20,7 +12,6 @@ interface GeneratePostProps {
 export default function GeneratePost({ setAiGeneratedContent }: GeneratePostProps) {
   const [prompt, setPrompt] = useState("");
   const [loading, setLoading] = useState(false);
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   const formMethods = useForm({
     defaultValues: {
@@ -29,23 +20,6 @@ export default function GeneratePost({ setAiGeneratedContent }: GeneratePostProp
       description: "",
     },
   });
-
-  const handleImageUpload = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      const file = event.target.files?.[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          if (reader.result) {
-            setImagePreview(reader.result as string);
-            formMethods.setValue("featureImage", reader.result as string);
-          }
-        };
-        reader.readAsDataURL(file);
-      }
-    },
-    [formMethods]
-  );
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -95,32 +69,6 @@ export default function GeneratePost({ setAiGeneratedContent }: GeneratePostProp
                 {loading ? "Generating..." : "Generate Content"}
               </button>
             </form>
-            {/* <FormField
-              control={formMethods.control}
-              name="featureImage"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Feature Image</FormLabel>
-                  <FormControl>
-                    <>
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleImageUpload}
-                      />
-                      {imagePreview && (
-                        <image
-                          src={imagePreview}
-                          alt="Preview"
-                          className="ml-4 w-32 h-32 object-cover border rounded"
-                        />
-                      )}
-                    </>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem> */}
-              {/* )} */}
-            {/* /> */}
           </FormProvider>
         </div>
       </main>

@@ -1,22 +1,23 @@
-"use client";
+'use client';
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, FormProvider } from "react-hook-form";
 import { z } from "zod";
+import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
-import { useState, useCallback, useEffect } from "react";
 import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import Tiptap from "@/components/Texteditor";
-
 import GeneratePost from "@/components/generatePost";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import Image from "next/image";
 import { useUser } from "@clerk/nextjs";
 import { getByClerkId } from "@/utils/actions/user/user"; // Correct import path
-import { CreatePost } from "@/utils/actions/blog/creatPost";
-import ImageGen from "@/components/imageGen";
 
+import ImageGen from "@/components/imageGen";
+import { ContentTemplate } from "@/utils/types/type";
+import TemplateSelector from "@/components/selectTemplate";
+import { CreatePost } from "@/utils/actions/blog/creatPost";
 
 const formSchema = z.object({
   title: z.string().min(5, { message: "Title must be at least 5 characters." }),
@@ -27,13 +28,12 @@ const formSchema = z.object({
 
 const AddPost = () => {
   const [useAI, setUseAI] = useState(false);
-  const [useImg, setUseImg] = useState(false)
+  const [useImg, setUseImg] = useState(false);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [aiGeneratedContent, setAiGeneratedContent] = useState("");
   const { user } = useUser();
   const [userId, setUserId] = useState<string | null>(null);
-
-
+  const [selectedTemplate, setSelectedTemplate] = useState<ContentTemplate | null>(null);
 
   useEffect(() => {
     if (user) {
@@ -45,6 +45,15 @@ const AddPost = () => {
     }
   }, [user]);
 
+  const handleTemplateSelect = (template: ContentTemplate) => {
+    setSelectedTemplate(template);
+    formMethods.reset({
+      slug: "",
+      title: "",
+      image: "",
+      description: "",
+    });
+  };
 
   const formMethods = useForm({
     resolver: zodResolver(formSchema),
@@ -76,21 +85,37 @@ const AddPost = () => {
       console.error("User ID not found");
       return;
     }
+
     try {
-      const { title, slug, image, description } = values;
-      const response = await CreatePost({
-        title,
-        slug,
-        image,
-        content: description,
-        authorId: userId,
+      const { slug, title, image, description } = values;
+      const aiPrompt = selectedTemplate?.aiPrompt;
+
+      const response = await fetch('/api/blog', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ prompt: aiPrompt, slug, title, description }),
       });
 
-      if ('error' in response) {
-        console.error("Failed to create post:", response.error);
+      const data = await response.json();
+
+      if (response.ok) {
+        const postResponse = await CreatePost({
+          slug,
+          title,
+          image,
+          content: data.message,
+          authorId: userId,
+        });
+
+        if ('error' in postResponse) {
+          console.error("Failed to create post:", postResponse.error);
+        } else {
+          console.log("Post created successfully:", postResponse);
+        }
       } else {
-        console.log("Post created successfully:", response);
-        // Optionally, handle success feedback or redirection
+        console.error("Failed to generate content:", data.message);
       }
     } catch (error) {
       console.error("Failed to create post:", error);
@@ -98,11 +123,11 @@ const AddPost = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center  bg-gray-100 min-h-screen">
-      <div className="w-full dark:bg-white  bg-black p-6 shadow-lg rounded-lg">
+    <div className="flex flex-col items-center justify-center bg-gray-100 min-h-screen">
+      <div className="w-full dark:bg-white bg-black p-6 shadow-lg rounded-lg">
         <h1 className="text-3xl font-bold text-blue-500 text-center mb-5">Create a New Post</h1>
         <div className="flex justify-center mb-5">
-        <Button
+          <Button
             onClick={() => {
               setUseAI(false);
               setUseImg(false);
@@ -132,7 +157,10 @@ const AddPost = () => {
         </div>
 
         {useAI ? (
-          <GeneratePost setAiGeneratedContent={setAiGeneratedContent} />
+          <div>
+            <TemplateSelector onSelect={handleTemplateSelect} mode={"light"} />
+            <GeneratePost setAiGeneratedContent={setAiGeneratedContent} />
+          </div>
         ) : useImg ? (
           <ImageGen />
         ) : (
@@ -144,7 +172,7 @@ const AddPost = () => {
                   name="slug"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel  className="dark:text-black text-white ">Slug</FormLabel>
+                      <FormLabel className="dark:text-black text-white">Slug</FormLabel>
                       <FormControl>
                         <Input placeholder="Slug for your Blog" {...field} />
                       </FormControl>
@@ -156,7 +184,7 @@ const AddPost = () => {
                   name="title"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="dark:text-black text-white ">Title</FormLabel>
+                      <FormLabel className="dark:text-black text-white">Title</FormLabel>
                       <FormControl>
                         <Input placeholder="Main title for your Blog" {...field} />
                       </FormControl>
@@ -166,12 +194,11 @@ const AddPost = () => {
                 <FormField
                   control={formMethods.control}
                   name="description"
-                  
                   render={({ field }) => (
-                    <FormItem  className="dark:text-black text-white dark:bg-white  bg-black dark:border-b-gray-50">
-                      <FormLabel  className="dark:text-black text-white ">Description</FormLabel>
-                      <FormControl >
-                        <Tiptap content={field.value} onChange={field.onChange}  />
+                    <FormItem className="dark:text-black text-white dark:bg-white bg-black dark:border-b-gray-50">
+                      <FormLabel className="dark:text-black text-white">Description</FormLabel>
+                      <FormControl>
+                        <Tiptap content={field.value} onChange={field.onChange} />
                       </FormControl>
                     </FormItem>
                   )}
@@ -181,7 +208,7 @@ const AddPost = () => {
                   name="image"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel  className="dark:text-black text-white ">Feature Image</FormLabel>
+                      <FormLabel className="dark:text-black text-white">Feature Image</FormLabel>
                       <FormControl>
                         <>
                           <input type="file" accept="image/*" onChange={handleImageUpload} />
@@ -206,6 +233,7 @@ const AddPost = () => {
             </Form>
           </FormProvider>
         )}
+
         {aiGeneratedContent && (
           <div className="mt-6 bg-gray-50 p-4 my-5 rounded-md">
             <h2 className="text-xl font-semibold mb-2 text-black">Generated Content</h2>
