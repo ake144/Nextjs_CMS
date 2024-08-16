@@ -18,6 +18,10 @@ import ImageGen from "@/components/imageGen";
 import { ContentTemplate } from "@/utils/types/type";
 import TemplateSelector from "@/components/selectTemplate";
 import { CreatePost } from "@/utils/actions/blog/creatPost";
+import { useToast } from "@/components/ui/use-toast";
+import { ToastAction } from "@/components/ui/toast";
+import { Router } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   title: z.string().min(5, { message: "Title must be at least 5 characters." }),
@@ -27,6 +31,7 @@ const formSchema = z.object({
 });
 
 const AddPost = () => {
+  const { toast } = useToast()
   const [useAI, setUseAI] = useState(false);
   const [useImg, setUseImg] = useState(false);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -34,6 +39,8 @@ const AddPost = () => {
   const { user } = useUser();
   const [userId, setUserId] = useState<string | null>(null);
   const [selectedTemplate, setSelectedTemplate] = useState<ContentTemplate | null>(null);
+  const router =  useRouter()
+
 
   useEffect(() => {
     if (user) {
@@ -88,14 +95,13 @@ const AddPost = () => {
 
     try {
       const { slug, title, image, description } = values;
-      const aiPrompt = selectedTemplate?.aiPrompt;
 
       const response = await fetch('/api/blog', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ prompt: aiPrompt, slug, title, description }),
+        body: JSON.stringify({ prompt: title }),
       });
 
       const data = await response.json();
@@ -110,8 +116,18 @@ const AddPost = () => {
         });
 
         if ('error' in postResponse) {
-          console.error("Failed to create post:", postResponse.error);
+          toast({
+            variant: "destructive",
+            title: "Uh oh! Something went wrong.",
+            description: "There was a problem wihle saving post.",
+            action: <ToastAction altText="Try again">Try again</ToastAction>,
+          })
         } else {
+          toast({
+            description: "Post created successfully",
+          })
+
+          router.push('/dashboard/posts')
           console.log("Post created successfully:", postResponse);
         }
       } else {

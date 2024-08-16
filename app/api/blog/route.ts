@@ -43,6 +43,8 @@ export async function POST(req: Request)
 
     const cleanedPrompt = stripHtml(prompt);
 
+    console.log(cleanedPrompt)
+
     const chatSession = model.startChat({
       generationConfig,
       history: [
@@ -53,7 +55,11 @@ export async function POST(req: Request)
       ],
     });
 
+    console.log(chatSession)
+    
     const result = await chatSession.sendMessage(cleanedPrompt);
+
+    console.log(result)
 
     return    NextResponse.json({ message: result.response.text() }, {status: 200});
   } catch (error: any) {
