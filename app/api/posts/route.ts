@@ -3,6 +3,8 @@ import { getPostsByApiKey } from "@/utils/actions/blog/getPosts";
 export async function GET(req: Request) {
   const apiKey = req.headers.get('x-api-key') as string;
 
+console.log(apiKey)
+
   if (!apiKey) {
     return new Response(JSON.stringify({ error: 'API key is required' }), {
       status: 400,
