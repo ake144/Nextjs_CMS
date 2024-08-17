@@ -64,7 +64,7 @@ const BlogPost=({ params }: { params: { id: string } })=>{
           {post.image && (
             <Image src={post.image} alt="Blog Post Image" height={400} width={300} className="w-full h-[500px] mb-6" />
           )}
-          <p className="mb-6">{post.content}</p>
+           <pre  className='overflow-x-auto mb-6 text-md whitespace-pre-wrap '> {post.content} </pre> 
         </div>
         <div className="md:w-1/3 md:pl-6">
           <div className="mb-6 border rounded-lg p-4">
