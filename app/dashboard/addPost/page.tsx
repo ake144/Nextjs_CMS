@@ -20,18 +20,17 @@ import TemplateSelector from "@/components/selectTemplate";
 import { CreatePost } from "@/utils/actions/blog/creatPost";
 import { useToast } from "@/components/ui/use-toast";
 import { ToastAction } from "@/components/ui/toast";
-import { Router } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   title: z.string().min(5, { message: "Title must be at least 5 characters." }),
   slug: z.string().min(5, { message: "Slug must be at least 5 characters." }),
-  image: z.string(),
+  image: z.string().optional(),
   description: z.string().min(10, { message: "Content must be at least 10 characters." }).trim(),
 });
 
 const AddPost = () => {
-  const { toast } = useToast()
+  const { toast } = useToast();
   const [useAI, setUseAI] = useState(false);
   const [useImg, setUseImg] = useState(false);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -39,8 +38,7 @@ const AddPost = () => {
   const { user } = useUser();
   const [userId, setUserId] = useState<string | null>(null);
   const [selectedTemplate, setSelectedTemplate] = useState<ContentTemplate | null>(null);
-  const router =  useRouter()
-
+  const router = useRouter();
 
   useEffect(() => {
     if (user) {
@@ -96,42 +94,57 @@ const AddPost = () => {
     try {
       const { slug, title, image, description } = values;
 
-      const response = await fetch('/api/blog', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ prompt: title }),
-      });
+      let finalContent = description; // Default to manually entered content
 
-      const data = await response.json();
-
-      if (response.ok) {
-        const postResponse = await CreatePost({
-          slug,
-          title,
-          image,
-          content: data.message,
-          authorId: userId,
+      if (useAI) {
+        // If AI is selected, call the API to generate content
+        const response = await fetch('/api/blog', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ title, slug }),
         });
 
-        if ('error' in postResponse) {
+        const data = await response.json();
+
+        if (response.ok) {
+          finalContent = data.message; // Use the generated content
+        } else {
+          console.error("Failed to generate content:", data.message);
           toast({
             variant: "destructive",
-            title: "Uh oh! Something went wrong.",
-            description: "There was a problem wihle saving post.",
+            title: "AI Content Generation Failed",
+            description: data.message,
             action: <ToastAction altText="Try again">Try again</ToastAction>,
-          })
-        } else {
-          toast({
-            description: "Post created successfully",
-          })
-
-          router.push('/dashboard/posts')
-          console.log("Post created successfully:", postResponse);
+          });
+          return;
         }
+      }
+
+      // Save the post
+      const postResponse = await CreatePost({
+        slug,
+        title,
+        image,
+        content: finalContent,
+        authorId: userId,
+      });
+
+      if ('error' in postResponse) {
+        toast({
+          variant: "destructive",
+          title: "Uh oh! Something went wrong.",
+          description: "There was a problem while saving the post.",
+          action: <ToastAction altText="Try again">Try again</ToastAction>,
+        });
       } else {
-        console.error("Failed to generate content:", data.message);
+        toast({
+          description: "Post created successfully",
+        });
+
+        router.push('/dashboard/posts');
+        console.log("Post created successfully:", postResponse);
       }
     } catch (error) {
       console.error("Failed to create post:", error);
