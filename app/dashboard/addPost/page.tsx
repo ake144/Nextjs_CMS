@@ -284,7 +284,7 @@ const AddPost = () => {
             <h2 className="text-xl font-semibold mb-2 text-black">Generated Content</h2>
             <ScrollArea className="h-[400px] mb-2 rounded-md border p-4">
               <div className="text-gray-700 whitespace-pre-wrap">
-                <ReactMarkdown children={aiGeneratedContent} />
+              <ReactMarkdown>{aiGeneratedContent}</ReactMarkdown>
               </div>
             </ScrollArea>
           </div>
