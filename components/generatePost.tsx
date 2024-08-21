@@ -46,7 +46,6 @@ export default function GeneratePost({ setAiGeneratedContent }: GeneratePostProp
   };
 
   return (
-    <ScrollArea className="h-[400px] mb-2 rounded-md border p-4">
       <main className="flex min-h-screen flex-col items-center justify-center p-4 bg-gray-100">
         <div className="w-full max-w-lg bg-white p-6 shadow-lg rounded-lg">
           <h1 className="text-3xl font-bold text-blue-500 text-center mb-5">
@@ -72,6 +71,5 @@ export default function GeneratePost({ setAiGeneratedContent }: GeneratePostProp
           </FormProvider>
         </div>
       </main>
-    </ScrollArea>
   );
 }

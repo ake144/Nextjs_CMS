@@ -22,6 +22,13 @@ import { useToast } from "@/components/ui/use-toast";
 import { ToastAction } from "@/components/ui/toast";
 import { useRouter } from "next/navigation";
 
+
+import ReactMarkdown from 'react-markdown'
+import { remark } from 'remark';
+import html from 'remark-html';
+import { htmlToText } from 'html-to-text';
+
+
 const formSchema = z.object({
   title: z.string().min(5, { message: "Title must be at least 5 characters." }),
   slug: z.string().min(5, { message: "Slug must be at least 5 characters." }),
@@ -90,14 +97,16 @@ const AddPost = () => {
       console.error("User ID not found");
       return;
     }
-
+  
     try {
       const { slug, title, image, description } = values;
-
-      let finalContent = description; // Default to manually entered content
-
+      
+      // Log values for debugging
+      console.log("Form Values:", values);
+  
+      let finalContent = description || ''; // Default to manually entered content
+  
       if (useAI) {
-        // If AI is selected, call the API to generate content
         const response = await fetch('/api/blog', {
           method: 'POST',
           headers: {
@@ -105,11 +114,11 @@ const AddPost = () => {
           },
           body: JSON.stringify({ title, slug }),
         });
-
+  
         const data = await response.json();
-
+  
         if (response.ok) {
-          finalContent = data.message; // Use the generated content
+          finalContent = data.message || ''; // Use the generated content
         } else {
           console.error("Failed to generate content:", data.message);
           toast({
@@ -121,16 +130,24 @@ const AddPost = () => {
           return;
         }
       }
-
+  
+      // Convert HTML to plain text
+      const textContent = htmlToText(finalContent, {
+        wordwrap: 130,
+      });
+  
+      // Log the final content for debugging
+      console.log("Text Content:", textContent);
+  
       // Save the post
       const postResponse = await CreatePost({
         slug,
         title,
         image,
-        content: finalContent,
+        content: textContent, // Store the converted plain text
         authorId: userId,
       });
-
+  
       if ('error' in postResponse) {
         toast({
           variant: "destructive",
@@ -142,7 +159,6 @@ const AddPost = () => {
         toast({
           description: "Post created successfully",
         });
-
         router.push('/dashboard/posts');
         console.log("Post created successfully:", postResponse);
       }
@@ -268,7 +284,7 @@ const AddPost = () => {
             <h2 className="text-xl font-semibold mb-2 text-black">Generated Content</h2>
             <ScrollArea className="h-[400px] mb-2 rounded-md border p-4">
               <div className="text-gray-700 whitespace-pre-wrap">
-                {aiGeneratedContent}
+                <ReactMarkdown children={aiGeneratedContent} />
               </div>
             </ScrollArea>
           </div>
