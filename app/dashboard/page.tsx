@@ -111,9 +111,9 @@ export default function Dashboard() {
                         {new Date(post.created_at).toLocaleDateString()}
                       </time>
                       <Link href={`/dashboard/posts/${post.id}`}>
-                        <h3 className="text-lg font-semibold text-gray-800">{post.title}</h3>
+                        <h3 className="text-lg font-semibold dark:text-white text-gray-600 ">{post.title}</h3>
                       </Link>
-                      <p className="mt-2 text-gray-600 line-clamp-2">
+                      <p className="mt-2 dark:text-white text-gray-600 line-clamp-2">
                         {post.content}
                       </p>
                     </div>

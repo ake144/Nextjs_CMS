@@ -47,6 +47,15 @@ const AddPost = () => {
   const [selectedTemplate, setSelectedTemplate] = useState<ContentTemplate | null>(null);
   const router = useRouter();
 
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(aiGeneratedContent).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  };
+
   useEffect(() => {
     if (user) {
       const fetchUserId = async () => {
@@ -171,7 +180,7 @@ const AddPost = () => {
     <div className="flex flex-col items-center justify-center bg-gray-100 min-h-screen">
       <div className="w-full dark:bg-white bg-black p-6 shadow-lg rounded-lg">
         <h1 className="text-3xl font-bold text-blue-500 text-center mb-5">Create a New Post</h1>
-        <div className="flex justify-center mb-5">
+        <div className="flex justify-center mb-2">
           <Button
             onClick={() => {
               setUseAI(false);
@@ -203,7 +212,6 @@ const AddPost = () => {
 
         {useAI ? (
           <div>
-            <TemplateSelector onSelect={handleTemplateSelect} mode={"light"} />
             <GeneratePost setAiGeneratedContent={setAiGeneratedContent} />
           </div>
         ) : useImg ? (
@@ -279,16 +287,23 @@ const AddPost = () => {
           </FormProvider>
         )}
 
-        {aiGeneratedContent && (
-          <div className="mt-6 bg-gray-50 p-4 my-5 rounded-md">
-            <h2 className="text-xl font-semibold mb-2 text-black">Generated Content</h2>
-            <ScrollArea className="h-[400px] mb-2 rounded-md border p-4">
-              <div className="text-gray-700 whitespace-pre-wrap">
-              <ReactMarkdown>{aiGeneratedContent}</ReactMarkdown>
-              </div>
-            </ScrollArea>
+        {aiGeneratedContent &&  <div className="mt-6 bg-gray-50 dark:bg-gray-800 p-6 my-5 rounded-lg shadow-md">
+        <h2 className="text-xl font-semibold mb-2 text-gray-900 dark:text-gray-200">Generated Content</h2>
+        <ScrollArea className="h-[400px] mb-4 rounded-md border p-4 dark:border-gray-700">
+          <div className="text-gray-700 dark:text-gray-300 whitespace-pre-wrap">
+            <ReactMarkdown>{aiGeneratedContent}</ReactMarkdown>
           </div>
-        )}
+        </ScrollArea>
+        <div className="flex justify-end">
+          <button
+            onClick={handleCopy}
+            className="bg-blue-500 dark:bg-blue-700 text-white py-2 px-4 rounded-lg hover:bg-blue-600 dark:hover:bg-blue-800 transition"
+          >
+            {copied ? 'Copied' : 'Copy to Clipboard'}
+          </button>
+        </div>
+      </div>
+}
       </div>
     </div>
   );
