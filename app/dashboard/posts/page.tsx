@@ -1,5 +1,4 @@
-'use client'
-
+'use client';
 
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
@@ -8,29 +7,21 @@ import { GetPostById } from '@/utils/actions/blog/getbyId';
 import { useUser } from '@clerk/nextjs';
 import { getByClerkId } from '@/utils/actions/user/user';
 import Image from 'next/image';
-import ContentTemplateSelection from '@/components/selectTemplate';
-import { ContentTemplate } from '@/utils/types/type';
-import TemplateSelector from '@/components/selectTemplate';
 import Templates from '@/components/postArea';
+import { useRouter } from 'next/navigation';
 
 interface Post {
   id: string;
   title: string;
   content: string;
   image?: string | null;
-  created_at: Date; // or Date
-  
- // Adjust as per your date format from the backend
+  created_at: Date;
 }
 
 const PostsPage: React.FC = () => {
   const { user } = useUser();
   const [posts, setPosts] = useState<Post[]>([]);
-
-  const handleTemplateSelect = (template: ContentTemplate) => {
-    // Handle template selection
-  };
-
+  const router = useRouter();
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -43,69 +34,73 @@ const PostsPage: React.FC = () => {
         }
       }
     };
-
     fetchPosts();
   }, [user]);
 
   return (
-    <>
-      <Link href='/'>
-        <div className='mx-2 p-7 w-[80px]'>
+    <div className="p-8 bg-gradient-to-r from-indigo-200 via-purple-200 to-pink-200 min-h-screen">
+      <div className="flex items-center justify-between mb-8">
+        <Button 
+          onClick={() => router.back()} 
+          variant="ghost" 
+          className="text-blue-700 hover:text-blue-900 transition-all duration-300"
+        >
           Back
-        </div>
-      </Link>
-
-      <div>
-      <Templates   />
-
-
-      </div>
-      <div className='p-4 m-4 justify-center items-center gap-1'>
-        <h1 className='text-3xl items-center mt-4 pt-3 underline-offset-1 p-5 justify-center'>Posts</h1>
-
+        </Button>
         <Link href='/dashboard/addPost'>
-          <Button className='m-5 p-4 bottom-0'>Create New Post</Button>
+          <Button variant="outline" className="hover:bg-blue-700 hover:text-white transition-all duration-300">
+            Create New Post
+          </Button>
         </Link>
       </div>
 
-      {posts.length === 0 && (
-        <p className='p-4 m-5'>You have no post</p>
+      <div className="rounded-lg bg-white p-6 shadow-lg mb-8">
+        <h2 className="text-3xl font-semibold text-center text-gray-700 mb-4">Coming Features - Stay Tuned!</h2>
+        <Templates />
+      </div>
+
+      <div className="text-center my-12">
+        <h1 className="text-5xl font-extrabold text-gray-900">Your Posts</h1>
+        <p className="text-gray-600 mt-4">Explore and manage your created posts</p>
+      </div>
+
+      {posts.length === 0 ? (
+        <p className="text-center text-gray-700">You have no posts yet. Start creating by clicking the button above.</p>
+      ) : (
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+          {posts.map((post) => (
+            <article 
+              key={post.id} 
+              className="overflow-hidden rounded-lg shadow-lg bg-white hover:shadow-2xl transition-shadow duration-300 transform hover:scale-105 hover:rotate-1"
+            >
+              <Image
+                alt="Post Thumbnail"
+                height={240}
+                width={320}
+                src={post.image ?? 'https://via.placeholder.com/400'}
+                className="h-48 w-full object-cover"
+              />
+              <div className="p-6">
+                <time 
+                  dateTime={post.created_at.toISOString()} 
+                  className="block text-xs text-gray-500 mb-2"
+                >
+                  {new Date(post.created_at).toLocaleDateString()}
+                </time>
+                <Link href={`/dashboard/posts/${post.id}`}>
+                  <h3 className="text-xl font-bold text-gray-900 hover:text-blue-600 transition-all duration-300">
+                    {post.title}
+                  </h3>
+                </Link>
+                <p className="mt-3 text-gray-700 line-clamp-3">
+                  {post.content}
+                </p>
+              </div>
+            </article>
+          ))}
+        </div>
       )}
-
-      <div className='flex flex-row'>
-        <h2 className='mt-[50px] p-3 text-4xl flex items-center justify-center'>
-          Explore Your Posts
-        </h2>
-      </div>
-
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 mx-4 mt-7 lg:grid-cols-3">
-        {posts.map((post) => (
-          <article key={post.id} className="overflow-hidden rounded-lg shadow transition hover:shadow-lg">
-            <Image
-              alt=""
-              height={56}
-              width={80}
-              src={post.image ?? 'https://via.placeholder.com/400'}
-              className="h-56 w-full object-cover"
-            />
-
-            <div className="bg-white p-4 sm:p-6">
-              <time dateTime={post.created_at.toISOString()} className="block text-xs text-gray-500">{new Date(post.created_at).toLocaleDateString()}</time>
-
-              <Link href={`/dashboard/posts/${post.id}`}>
-              
-                  <h3 className="mt-0.5 text-lg text-gray-900">{post.title}</h3>
-              
-              </Link>
-
-              <p className="mt-2 line-clamp-3 text-sm/relaxed text-gray-500">
-                {post.content}
-              </p>
-            </div>
-          </article>
-        ))}
-      </div>
-    </>
+    </div>
   );
 };
 

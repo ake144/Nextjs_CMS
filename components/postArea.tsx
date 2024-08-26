@@ -15,12 +15,12 @@ const Templates = ( ) => {
 
 
   return (
-    <div className={`template-selector dark:text-white   text-black `}>
+    <div className={`template-selector dark:text-black  text-white`}>
       <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
         {contentTemplates.map((template) => (
           <div
             key={template.name}>
-            <template.icon size={24} className='dark:text-gray-400 text-black' />
+            <template.icon size={24} className='dark:text-black text-white' />
             <h3>{template.name}</h3>
           </div>
         ))}

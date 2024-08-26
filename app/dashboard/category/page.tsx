@@ -12,7 +12,7 @@ interface CategorySchema {
 }
 
 function Category() {
-  const [categories, setCategories] = useState<any>([]);
+  const [categories, setCategories] = useState<CategorySchema[]>([]);
   const [newCategory, setNewCategory] = useState<string>('');
 
   useEffect(() => {
@@ -20,7 +20,7 @@ function Category() {
       if (Array.isArray(data)) {
         setCategories(data);
       } else {
-        console.error(data.error);
+        console.error('Failed to fetch categories:', data.error);
       }
     });
   }, []);
@@ -29,42 +29,48 @@ function Category() {
     e.preventDefault();
     if (newCategory.trim() === '') return;
     const category = await createCategory({ category: newCategory });
-    setCategories([...categories, category]);
+    if ('category' in category) {
+      setCategories([...categories, category]);
+    } else {
+      console.error('Failed to create category:', category.error);
+    }
     setNewCategory('');
   };
 
   return (
-    <div className="container mx-auto mt-10 p-6 max-w-4xl">
-      <h1 className="text-4xl font-bold mb-6">Category Page</h1>
+    <div className="container mx-auto mt-10 p-6 max-w-3xl">
+      <h1 className="text-4xl font-bold text-gray-800 mb-8">Category Management</h1>
 
       <Dialog>
         <DialogTrigger asChild>
-          <Button className="mb-4">Add New Category</Button>
+          <Button className="mb-6 bg-blue-600 text-white hover:bg-blue-700 transition-all">Add New Category</Button>
         </DialogTrigger>
         <DialogContent>
-          <DialogTitle>Add New Category</DialogTitle>
-          <DialogDescription>Enter the name of the new category you want to add.</DialogDescription>
+          <DialogTitle className="text-2xl font-bold">Add a New Category</DialogTitle>
+          <DialogDescription className="text-gray-600 mb-4">Please enter the name of the new category.</DialogDescription>
           <form onSubmit={onSubmit} className="space-y-4">
             <Input
               type="text"
               value={newCategory}
               onChange={(e) => setNewCategory(e.target.value)}
-              placeholder="Category Name"
+              placeholder="Enter category name"
               required
-              className="w-full"
+              className="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
-            <Button type="submit">Add Category</Button>
+            <div className="flex justify-end space-x-2">
+              <DialogClose asChild>
+                <Button variant="secondary" className="bg-gray-500 text-white hover:bg-gray-600">Cancel</Button>
+              </DialogClose>
+              <Button type="submit" className="bg-blue-600 text-white hover:bg-blue-700 transition-all">Add Category</Button>
+            </div>
           </form>
-          <DialogClose asChild>
-            <Button variant="secondary">Close</Button>
-          </DialogClose>
         </DialogContent>
       </Dialog>
 
-      <ul className="space-y-2 mt-4">
-        <h2 className="text-2xl my-2 font-bold">Categories</h2>
+      <ul className="mt-6 divide-y divide-gray-200">
+        <h2 className="text-2xl font-semibold mb-4">Existing Categories</h2>
         {categories.map((category: CategorySchema, index: number) => (
-          <li key={index} className="p-2 border-b">{category.category}</li>
+          <li key={index} className="py-2 text-lg text-gray-700">{category.category}</li>
         ))}
       </ul>
     </div>
