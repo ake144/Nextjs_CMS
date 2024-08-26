@@ -4,10 +4,14 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'utfs.io'
+        hostname: 'utfs.io',
+      },
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
       }
     ],
-    domains: ["res.cloudinary.com"]
+    domains: ["res.cloudinary.com"],
   },
   experimental: {
     serverActions: {

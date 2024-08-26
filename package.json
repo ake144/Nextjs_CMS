@@ -16,6 +16,7 @@
     "@hookform/resolvers": "^3.4.2",
     "@huggingface/inference": "^2.7.0",
     "@prisma/client": "^5.16.2",
+    "@radix-ui/react-accordion": "^1.2.0",
     "@radix-ui/react-avatar": "^1.0.4",
     "@radix-ui/react-dialog": "^1.0.5",
     "@radix-ui/react-dropdown-menu": "^2.0.6",

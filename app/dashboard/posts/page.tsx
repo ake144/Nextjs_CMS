@@ -43,7 +43,7 @@ const PostsPage: React.FC = () => {
         <Button 
           onClick={() => router.back()} 
           variant="ghost" 
-          className="text-blue-700 hover:text-blue-900 transition-all duration-300"
+          className="text-blue-700 hover:text-blue-200 transition-all duration-300"
         >
           Back
         </Button>

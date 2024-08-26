@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { getPostByPostId, getUserById } from '@/utils/actions/blog/blog';
 import { GetPostById } from '@/utils/actions/blog/getbyId';
+import { Button } from '@/components/ui/button';
 
 interface Post {
   id: string;
@@ -19,6 +20,7 @@ interface Post {
 const BlogPost=({ params }: { params: { id: string } })=>{
   const { id } = params;
   const [post, setPost] = useState<Post | null>(null);
+  const router = useRouter()
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -52,11 +54,13 @@ const BlogPost=({ params }: { params: { id: string } })=>{
 
   return (
     <div className="max-w-6xl mx-auto lg:ml-[70px] lg:mt-[50px] mt-10 p-6">
-      <Link href='/'>
-        <div className='mb-2 p-3'>
+     <Button 
+          onClick={() => router.back()} 
+          variant="ghost" 
+          className="text-blue-700 hover:text-blue-200 transition-all duration-300"
+        >
           Back
-        </div>
-      </Link>
+        </Button>
       <div className="flex flex-col md:flex-row">
         <div className="md:w-2/3">
           <h1 className="text-4xl font-bold mb-4">{post.title}</h1>
