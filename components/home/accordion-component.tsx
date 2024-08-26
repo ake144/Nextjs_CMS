@@ -13,9 +13,9 @@ export function AccordionComponent() {
             </h2>
             <Accordion type="single" collapsible className="w-full">
                 <AccordionItem value="item-1">
-                    <AccordionTrigger><span className="text-xl font-semibold">Do I get access to this landing page in the starter kit?</span></AccordionTrigger>
+                    <AccordionTrigger><span className="text-xl font-semibold">Do I need card or should I be premium user to access all features?</span></AccordionTrigger>
                     <AccordionContent>
-                        <p>Yes, this page isn&apos;t even a real landing page more so a template for you to build on</p>
+                        <p>No, this page isn&apos;t even a need to create a premium account, it&apos;s completely free</p>
                     </AccordionContent>
                 </AccordionItem>
             </Accordion>
