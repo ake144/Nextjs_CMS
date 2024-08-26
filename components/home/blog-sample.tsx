@@ -11,14 +11,16 @@ export default function BlogSample() {
     },
     {
       id: 2,
-      image: "https://images.unsplash.com/photo-1512820790803-83ca734da794",
-      title: "How to Choose the Right Dog for Your Lifestyle",
+      image: "https://images.unsplash.com/photo-1603493606378-ca85cbc47b77",
+      title: "How to stay calm in  Your day-to-day lifestyle",
       date: "2024-04-16 08:29:32.188999-05",
     },
+
+    
     {
       id: 3,
-      image: "https://images.unsplash.com/photo-1512820790803-83ca734da794",
-      title: "Top Automation Testing Suites for Seamless Software Testing",
+      image: "https://images.unsplash.com/photo-1607799279861-4dd421887fb3",
+      title: "The art of mastering of programming",
       date: "2024-04-16 15:20:52.368844-05",
     },
   ];
